@@ -1,0 +1,6 @@
+outs:
+- md5: 846932142a6069b39d7d227a1cef85f6
+  size: 232155
+  isexec: true
+  hash: md5
+  path: rent_apartments.csv
