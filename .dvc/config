@@ -1,0 +1,4 @@
+[core]
+    remote = mlstore
+['remote "mlstore"']
+    url = ../.dvcstore
