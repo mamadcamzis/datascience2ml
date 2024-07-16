@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "datascience2ml"
+version = "0.1.0"
+description = "Build and Deploy ML microservice"
+authors = ["Mamadou Camara <camara0388@gmail.com>"]
+license = "GNU"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "3.10.12"
+scikit-learn = "^1.5.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
