@@ -26,5 +26,5 @@ def load_data(path: FilePath = settings.DATA_FILE_NAME) -> pd.DataFrame:
     >>> print(df.head())
     """
     csv_path = os.path.join(settings.DATA_PATH, path)
-    logger.info(f"Loading csv file at {csv_path}")
+    logger.info(f"Loading csv file at {csv_path} ..")
     return pd.read_csv(csv_path)

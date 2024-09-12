@@ -24,11 +24,13 @@ class Settings(BaseSettings):
     MODELS_PATH : DirectoryPath
     MODELS_NAME : str 
     VERSION : str 
+    LOG_level : str
   
     
 settings = Settings()
 
-logger.add("app.log", rotation="1 day", compression="zip")
+logger.remove()
+logger.add("app.log", rotation="1 day", compression="zip", level=settings.LOG_level)
 
 # if __name__ == '__main__':
 #     print("GO")

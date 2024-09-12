@@ -153,6 +153,7 @@ def train_model(
     logger.info("Training model and tunning hyperparams ...")
     rf_classifier = RandomForestRegressor()
     grid_space = {'n_estimators': [100, 200, 300], 'max_depth': [3, 6, 9, 12]}
+    logger.debug(f"Grid Space is {grid_space}  ..")
     grid = GridSearchCV(rf_classifier, param_grid=grid_space, cv=5, scoring = 'r2')
     model_grid = grid.fit(x_train, y_train)
     
