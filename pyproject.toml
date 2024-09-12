@@ -9,6 +9,8 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "3.10.12"
 scikit-learn = "^1.5.1"
+pydantic-settings = "^2.3.4"
+loguru = "^0.7.2"
 
 
 [build-system]
