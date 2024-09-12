@@ -2,6 +2,8 @@ import re
 import pandas as pd
 from collect import load_data
 
+from loguru import logger
+
 
 def prepare_data() -> pd.DataFrame:
     """
@@ -18,6 +20,7 @@ def prepare_data() -> pd.DataFrame:
     >>> df = prepare_data()
     >>> print(df.head())
     """
+    logger.info("Preparing data pipeline processing ...")
     data = load_data()
     # Encoder les colonnes 'balcony', 'parking', 'furnished', 'garage', 'storage'
     data_encoded = encode_cat_cols(data)
@@ -54,6 +57,7 @@ def encode_cat_cols(data: pd.DataFrame, columns: list = ['balcony', 'parking', '
     >>> encoded_df = encode_cat_cols(df)
     >>> print(encoded_df)
     """
+    logger.info(f"Encoding categorical columns {columns}")
     return pd.get_dummies(data, columns=columns, drop_first=True)
 
 
@@ -79,6 +83,7 @@ def parse_garden_col(data: pd.DataFrame) -> pd.DataFrame:
     >>> df = parse_garden_col(df)
     >>> print(df)
     """
+    logger.info("Parsing 'garden' column ...")
     for i in range(len(data)):
         if data.loc[i, "garden"] == 'Not present':
             data.loc[i, "garden"] = 0

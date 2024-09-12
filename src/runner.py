@@ -1,20 +1,20 @@
 import logging
 from model_service import ModelService
+from config import settings
 
-logger = logging.getLogger(__name__)
+from loguru import logger
 
+@logger.catch
 def main():
     
-    logging.basicConfig(level=logging.INFO)
+    logger.info("Starting the prediction process, running  the application ...")
+    
     ml_svc = ModelService()
     # Load Model
     ml_svc.load_model()
-
-    # Prediction
-
     pred = ml_svc.predict([85, 2015, 2, 20, 1, 1, 0, 0, 1])
 
-    print(f"Prediction is: {pred}")
+    logger.info(f"Prediction is: {pred[0]:.2f} ...")
     
     
 if __name__ == '__main__':

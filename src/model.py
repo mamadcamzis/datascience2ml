@@ -1,6 +1,6 @@
 
 import os
-import pickle
+#import pickle
 import joblib
 import logging
 import pandas as pd 
@@ -8,14 +8,10 @@ from typing import List, Tuple
 from sklearn.base import BaseEstimator
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split, GridSearchCV
+from loguru import logger
 from preparation import prepare_data
-from paths import MODELS_DIR
-from config import version, model_name
-
-#logging.basicConfig(filename='myapp.log', level=logging.INFO)
-
-
-logger = logging.getLogger(__name__)
+# from paths import MODELS_DIR
+from config import settings
 
 
 def build_model() -> None:
@@ -33,7 +29,7 @@ def build_model() -> None:
     - save_model(model) : Sauvegarde le modèle entraîné.
 
     """
-    logging.info("Building Model")
+    logger.info("Starting  Building Model Pipeline ...")
     # Préparation des données
     data = prepare_data()
 
@@ -47,13 +43,13 @@ def build_model() -> None:
     rf_classifier = train_model(X_train, y_train)
 
     # Évaluation du modèle
-    score = evaluate_model(rf_classifier, X_test, y_test)
+    evaluate_model(rf_classifier, X_test, y_test)
 
     # Sauvegarde du modèle entraîné
     save_model(rf_classifier)
 
     # Affichage du score obtenu
-    print(f"Score is: {score:.2f}")
+    #print(f"Score is: {score:.2f}")
 
 
 
@@ -90,7 +86,7 @@ def get_X_y(
         - y : pandas.Series
             La série représentant la variable cible.
     """
-    logging.info("Getting X, y data ...")
+    logger.info("Getting X, y data ...")
     X = data[col_x]
     y = data[col_y]
     return X, y
@@ -127,7 +123,7 @@ def split_train_test(
         - y_test : pandas.Series
             La série représentant la variable cible pour l'ensemble de test.
     """
-    logging.info("Splitting data in train and test")
+    logger.info("Splitting data in train and test")
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=42)
     return X_train, X_test, y_train, y_test
 
@@ -154,7 +150,7 @@ def train_model(
     BaseEstimator
         Le modèle de classification entraîné.
     """
-    logging.info("Training model and tunning hyperparams")
+    logger.info("Training model and tunning hyperparams ...")
     rf_classifier = RandomForestRegressor()
     grid_space = {'n_estimators': [100, 200, 300], 'max_depth': [3, 6, 9, 12]}
     grid = GridSearchCV(rf_classifier, param_grid=grid_space, cv=5, scoring = 'r2')
@@ -185,7 +181,7 @@ def evaluate_model(
     float
         Le score de performance du modèle sur l'ensemble de test.
     """
-    logging.info("Evaluating Model")
+    logger.info(f"Evaluating Model, Score is {model.score(X_test, y_test):.2f}")
     score = model.score(X_test, y_test)
     return score
 
@@ -206,19 +202,13 @@ def save_model(model):
     avant d'appeler cette fonction.
     """
     
-    logging.info("Saving Model")
-    joblib_model = model_name + '_v_' + version + '.joblib'
-    #pickle_model = model_name + '_v_' + version + '.pkl'
+  
+    joblib_model = settings.MODELS_NAME + '_v_' + settings.VERSION + '.joblib'
     
-    #persist_dir_p = os.path.join(MODELS_DIR, pickle_model)
-    persist_dir_j = os.path.join(MODELS_DIR, joblib_model)  
-    
-    # Sauvegarde en format pickle
-    # with open(persist_dir_p, 'wb') as f:
-    #     pickle.dump(model, f)
-    
+    persist_path = os.path.join(settings.MODELS_PATH, joblib_model)  
+    logger.info(f"Saving Model at {persist_path}")
     # Sauvegarde en format joblib
-    joblib.dump(model, persist_dir_j)
+    joblib.dump(model, persist_path)
 
 
-build_model()
+#build_model()

@@ -1,18 +1,19 @@
 import os
 import pandas as pd
-from paths import DATA_DIR
-from config import csv_filename
+from pydantic import FilePath
+from config import settings
 
-raw_data_path = os.path.join(DATA_DIR, csv_filename)
+from loguru import logger
 
-def load_data(path: str = raw_data_path) -> pd.DataFrame:
+
+def load_data(path: FilePath = settings.DATA_FILE_NAME) -> pd.DataFrame:
     """
     Charge un fichier CSV à partir d'un chemin donné et le renvoie sous forme de DataFrame pandas.
 
     Paramètres:
     -----------
-    path : str, optionnel
-        Le chemin vers le fichier CSV à charger. Par défaut, il utilise la variable `raw_data_path`.
+    path : FilePath, optionnel
+        Le chemin vers le fichier CSV à charger. Par défaut, il utilise la variable `settings.DATA_FILE_NAME`.
 
     Retour:
     -------
@@ -24,7 +25,6 @@ def load_data(path: str = raw_data_path) -> pd.DataFrame:
     >>> df = load_data('data/raw/my_data.csv')
     >>> print(df.head())
     """
-    return pd.read_csv(path)
-
-# Test
-#print(load_data().head())
+    csv_path = os.path.join(settings.DATA_PATH, path)
+    logger.info(f"Loading csv file at {csv_path}")
+    return pd.read_csv(csv_path)
