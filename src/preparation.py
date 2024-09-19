@@ -1,6 +1,6 @@
 import re
 import pandas as pd
-from collect import load_data
+from collect import load_data, load_data_from_db
 
 from loguru import logger
 
@@ -21,7 +21,7 @@ def prepare_data() -> pd.DataFrame:
     >>> print(df.head())
     """
     logger.info("Preparing data pipeline processing ...")
-    data = load_data()
+    data = load_data_from_db() #load_data()
     # Encoder les colonnes 'balcony', 'parking', 'furnished', 'garage', 'storage'
     data_encoded = encode_cat_cols(data)
     # Parser la colonne 'garden'

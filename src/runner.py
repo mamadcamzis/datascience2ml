@@ -1,7 +1,4 @@
-import logging
 from model_service import ModelService
-from config import settings
-
 from loguru import logger
 
 @logger.catch
