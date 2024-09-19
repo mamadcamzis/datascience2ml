@@ -1,2 +1,2 @@
-# From Data scientist to Machine Learning Engineer
+# From Data Scientist to Machine Learning Engineer
 
