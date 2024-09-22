@@ -1,14 +1,25 @@
 
+"""
+This module creates the pipeline for building, training and saving ML model.
+
+It includes the process of data preparation, model training using
+RandomForestRegressor, hyperparameter tuning with GridSearchCV,
+model evaluation, and serialization of the trained model.
+"""
+
 import os
 import joblib
-import pandas as pd 
+import pandas as pd
+
 from typing import List, Tuple
+
 from sklearn.base import BaseEstimator
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split, GridSearchCV
 from loguru import logger
+
 from model.pipeline.preparation import prepare_data
-from config.config import settings
+from config import model_settings
 
 
 def build_model() -> None:
@@ -45,17 +56,12 @@ def build_model() -> None:
     # Sauvegarde du modèle entraîné
     save_model(rf_classifier)
 
-    # Affichage du score obtenu
-    #print(f"Score is: {score:.2f}")
-
-
-
 
 def get_X_y(
-    data: pd.DataFrame, 
-    col_x: List[str] = ['area', 'constraction_year', 'bedrooms', 'garden', 
-                        'balcony_yes', 'parking_yes', 'furnished_yes', 
-                        'garage_yes', 'storage_yes'], 
+    data: pd.DataFrame,
+    col_x: List[str] = ['area', 'constraction_year', 'bedrooms', 'garden',
+                        'balcony_yes', 'parking_yes', 'furnished_yes',
+                        'garage_yes', 'storage_yes'],
     col_y: str = 'rent'
 ) -> Tuple[pd.DataFrame, pd.Series]:
     """
@@ -66,12 +72,12 @@ def get_X_y(
     data : pandas.DataFrame
         Le DataFrame contenant les données.
     col_x : List[str], optional
-        La liste des colonnes à utiliser comme caractéristiques. 
-        Les colonnes par défaut sont ['area', 'constraction_year', 
-        'bedrooms', 'garden', 'balcony_yes', 'parking_yes', 
+        La liste des colonnes à utiliser comme caractéristiques.
+        Les colonnes par défaut sont ['area', 'constraction_year',
+        'bedrooms', 'garden', 'balcony_yes', 'parking_yes',
         'furnished_yes', 'garage_yes', 'storage_yes'].
     col_y : str, optional
-        Le nom de la colonne à utiliser comme variable cible. 
+        Le nom de la colonne à utiliser comme variable cible.
         La colonne par défaut est 'rent'.
 
     Returns
@@ -87,11 +93,11 @@ def get_X_y(
     X = data[col_x]
     y = data[col_y]
     return X, y
-    
+
 
 def split_train_test(
-    X: pd.DataFrame, 
-    y: pd.Series, 
+    X: pd.DataFrame,
+    y: pd.Series,
     test_size: float = 0.2
 ) -> Tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series]:
     """
@@ -104,8 +110,8 @@ def split_train_test(
     y : pandas.Series
         La série représentant la variable cible.
     test_size : float, optional
-        La proportion de l'ensemble de données à inclure dans l'ensemble de test. 
-        La valeur par défaut est 0.2.
+        La proportion de l'ensemble de données à inclure dans l'ensemble de
+        test. La valeur par défaut est 0.2.
 
     Returns
     -------
@@ -121,14 +127,14 @@ def split_train_test(
             La série représentant la variable cible pour l'ensemble de test.
     """
     logger.info("Splitting data in train and test")
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=42)
+    X_train, X_test, y_train, y_test = train_test_split(X, y,
+                                                        test_size=test_size,
+                                                        random_state=42)
     return X_train, X_test, y_train, y_test
 
 
-
-
 def train_model(
-    x_train: pd.DataFrame, 
+    x_train: pd.DataFrame,
     y_train: pd.Series
 ) -> BaseEstimator:
     """
@@ -151,15 +157,17 @@ def train_model(
     rf_classifier = RandomForestRegressor()
     grid_space = {'n_estimators': [100, 200, 300], 'max_depth': [3, 6, 9, 12]}
     logger.debug(f"Grid Space is {grid_space}  ..")
-    grid = GridSearchCV(rf_classifier, param_grid=grid_space, cv=5, scoring = 'r2')
+    grid = GridSearchCV(rf_classifier,
+                        param_grid=grid_space,
+                        cv=5,
+                        scoring='r2')
     model_grid = grid.fit(x_train, y_train)
-    
-    return  model_grid.best_estimator_
+    return model_grid.best_estimator_
 
-    
+
 def evaluate_model(
-    model: BaseEstimator, 
-    X_test: pd.DataFrame, 
+    model: BaseEstimator,
+    X_test: pd.DataFrame,
     y_test: pd.Series
 ) -> float:
     """
@@ -179,14 +187,16 @@ def evaluate_model(
     float
         Le score de performance du modèle sur l'ensemble de test.
     """
-    logger.info(f"Evaluating Model, Score is {model.score(X_test, y_test):.2f}")
+    logger.info(f"Evaluating Model, Score is \
+        {model.score(X_test, y_test):.2f}")
     score = model.score(X_test, y_test)
     return score
 
 
 def save_model(model):
     """
-    Sauvegarde le modèle à la fois en format pickle et joblib dans le répertoire MODELS_DIR.
+    Sauvegarde le modèle à la fois en format pickle et joblib dans 
+    le repertoire MODELS_DIR.
 
     Parameters
     ----------
@@ -195,18 +205,16 @@ def save_model(model):
 
     Notes
     -----
-    Cette fonction utilise les variables globales model_name et version pour générer
-    les noms de fichiers. Assurez-vous que ces variables sont définies correctement
-    avant d'appeler cette fonction.
+    Cette fonction utilise les variables globales model_name et version pour
+    générer les noms de fichiers. Assurez-vous que ces variables sont définies
+    correctement avant d'appeler cette fonction.
     """
-    
-  
-    joblib_model = settings.MODELS_NAME + '_v_' + settings.VERSION + '.joblib'
-    
-    persist_path = os.path.join(settings.MODELS_PATH, joblib_model)  
+
+    joblib_model = model_settings.MODELS_NAME + '_v_' + model_settings.VERSION\
+        + '.joblib'
+    persist_path = os.path.join(model_settings.MODELS_PATH,
+                                joblib_model)
     logger.info(f"Saving Model at {persist_path}")
     # Sauvegarde en format joblib
-    joblib.dump(model, persist_path)
-
-
-#build_model()
+    with open(persist_path, 'wb') as file:
+        joblib.dump(model, file)

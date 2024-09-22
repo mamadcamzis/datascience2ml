@@ -1,8 +1,16 @@
-import re
-import pandas as pd
-from model.pipeline.collect import load_data_from_db, load_data
+"""
+This module provides functionality for preparing a dataset for ML model.
 
+It consists of functions to load data from a database,
+encode categorical columns, and parse specific columns for further processing.
+"""
+
+import re
+
+import pandas as pd
 from loguru import logger
+
+from model.pipeline.collect import load_data_from_db 
 
 
 def prepare_data() -> pd.DataFrame:
@@ -83,13 +91,12 @@ def parse_garden_col(data: pd.DataFrame) -> pd.DataFrame:
     >>> df = parse_garden_col(df)
     >>> print(df)
     """
+
     logger.info("Parsing 'garden' column ...")
-    for i in range(len(data)):
-        if data.loc[i, "garden"] == 'Not present':
-            data.loc[i, "garden"] = 0
-        else:
-            data.loc[i, "garden"] = int(re.findall(r'\d+', data.loc[i, "garden"])[0])
+    data['garden'] = data['garden'].apply(
+        lambda x: 0 if x == 'Not present' else int(re.findall(r'\d+', x)[0]),
+    )
+    
     return data
 
-# df = prepare_data()
-# print(df.garden.unique())
+
