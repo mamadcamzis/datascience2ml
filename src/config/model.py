@@ -19,8 +19,6 @@ class ModelSettings(BaseSettings):
         MODELS_NAME (str): Name of the ML model.
         VERSION (str): Version of the ML model.
         DATA_FILE_NAME (str): Name of the data file.
-     
-
     """
 
     model_config = SettingsConfigDict(

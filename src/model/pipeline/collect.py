@@ -23,12 +23,14 @@ from config import engine
 
 def load_data(path: FilePath = model_settings.DATA_FILE_NAME) -> pd.DataFrame:
     """
-    Charge un fichier CSV à partir d'un chemin donné et le renvoie sous forme DataFrame pandas.
+    Charge un fichier CSV à partir d'un chemin donné et le renvoie sous forme
+    DataFrame pandas.
 
     Paramètres:
     -----------
     path : FilePath, optionnel
-        Le chemin vers le fichier CSV à charger. Par défaut, il utilise la variable `model_settings.DATA_FILE_NAME`.
+        Le chemin vers le fichier CSV à charger. Par défaut, il utilise
+        la variable `model_settings.DATA_FILE_NAME`.
 
     Retour:
     -------

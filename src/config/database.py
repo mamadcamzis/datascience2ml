@@ -17,8 +17,7 @@ class DbSettings(BaseSettings):
         model_config (SettingsConfigDict): Model config, loaded from .env file.
         DB_CONNECTION (str): Database connection string.
         TABLE_NAME (str): Name of the rental apartments table in DB.
-        
-    """
+"""
 
     model_config = SettingsConfigDict(
         env_file='config/.env',

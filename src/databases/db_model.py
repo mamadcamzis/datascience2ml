@@ -41,9 +41,9 @@ class RentApartments(Base):
         neighborhood (str): Neighborhood where the apartment is located.
         rent (int): Monthly rent price.
     """
-   
+
     __tablename__ = db_settings.TABLE_NAME
-  
+
     address: Mapped[str] = mapped_column(VARCHAR(), primary_key=True)
     area: Mapped[float] = mapped_column(REAL())
     constraction_year: Mapped[int] = mapped_column(INTEGER())

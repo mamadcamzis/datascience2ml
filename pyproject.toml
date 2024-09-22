@@ -12,6 +12,7 @@ scikit-learn = "^1.5.1"
 pydantic-settings = "^2.3.4"
 loguru = "^0.7.2"
 sqlalchemy = "^2.0.35"
+flake8 = "^7.1.1"
 
 
 [build-system]

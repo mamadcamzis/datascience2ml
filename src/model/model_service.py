@@ -32,34 +32,32 @@ class ModelService:
         load_model: Loads the model from file or builds it if it doesn't exist.
         predict: Makes a prediction using the loaded model.
     """
-   
     def __init__(self) -> None:
         """Initializes the ModelService with default values."""
-       
         self.model = None
         self.model_name = model_settings.MODELS_NAME
-   
+
     def load_model(self, model_name=None) -> None:
         """Loads the model from a specified path, or builds it if not exist"""
-       
+
         logger.info("Checking the existence of model config file ...")
         if model_name:
             self.model_name = model_name
-           
+
         joblib_model = self.model_name + '_v_' + \
             model_settings.VERSION + '.joblib'
         model_path = Path(f"{model_settings.MODELS_PATH}/{joblib_model}")
-   
+
         if not model_path.exists():
             logger.warning(f"Model not found at {model_path} -> \
                 building a new {model_settings.MODELS_NAME} model ...")
             build_model()
-       
+
         logger.info(f"Model {model_settings.MODELS_NAME} exists ->\
             Loading Model from {model_path} ...")
         with open(model_path, 'rb') as file:
             self.model = joblib.load(file)
-                
+
     def predict(self, input_parameters: list) -> list:
         """
     Makes a prediction using the loaded model.
@@ -73,20 +71,24 @@ class ModelService:
     Returns:
         list: The prediction result from the model.
     """
-      
+
         logger.info(f"Predicting the price of the house with \
             the following parameters \
                 {input_parameters} ...")
         if not isinstance(input_parameters, pd.DataFrame):
-            input_parameters = pd.DataFrame([input_parameters],
-                                            columns=['area',
-                                                     'constraction_year',
-                                                     'bedrooms',
-                                                     'garden',
-                                                     'balcony_yes',
-                                                     'parking_yes',
-                                                     'furnished_yes',
-                                                     'garage_yes',
-                                                     'storage_yes'])
-          
+            input_parameters = pd.DataFrame(
+                                            [input_parameters],
+                                            columns=[
+                                                'area',
+                                                'constraction_year',
+                                                'bedrooms',
+                                                'garden',
+                                                'balcony_yes',
+                                                'parking_yes',
+                                                'furnished_yes',
+                                                'garage_yes',
+                                                'storage_yes'
+                                            ]
+                                            )
+
         return self.model.predict(input_parameters)

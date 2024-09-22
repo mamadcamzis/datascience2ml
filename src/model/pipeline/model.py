@@ -30,10 +30,14 @@ def build_model() -> None:
     -----
     Cette fonction utilise les fonctions suivantes définies ailleurs :
     - prepare_data() : Prépare les données pour l'entraînement du modèle.
-    - get_X_y(data) : Extrait les caractéristiques et la variable cible à partir des données.
-    - split_train_test(X, y) : Divise les données en ensembles d'entraînement et de test.
-    - train_model(X_train, y_train) : Entraîne le modèle avec les données d'entraînement.
-    - evaluate_model(model, X_test, y_test) : Évalue les performances du modèle sur l'ensemble de test.
+    - get_X_y(data) : Extrait les caractéristiques et la variable cible
+        à partir des données.
+    - split_train_test(X, y) : Divise les données en ensembles
+        d'entraînement et de test.
+    - train_model(X_train, y_train) : Entraîne le modèle avec les données
+        d'entraînement.
+    - evaluate_model(model, X_test, y_test) : Évalue les performances
+        du modèle sur l'ensemble de test.
     - save_model(model) : Sauvegarde le modèle entraîné.
 
     """
@@ -122,7 +126,8 @@ def split_train_test(
         - X_test : pandas.DataFrame
             Le DataFrame des caractéristiques pour l'ensemble de test.
         - y_train : pandas.Series
-            La série représentant la variable cible pour l'ensemble d'entraînement.
+            La série représentant la variable cible pour l'ensemble
+            d'entraînement.
         - y_test : pandas.Series
             La série représentant la variable cible pour l'ensemble de test.
     """
@@ -195,8 +200,8 @@ def evaluate_model(
 
 def save_model(model):
     """
-    Sauvegarde le modèle à la fois en format pickle et joblib dans 
-    le repertoire MODELS_DIR.
+    Sauvegarde le modèle à la fois en format pickle et joblib
+    dans le repertoire MODELS_DIR.
 
     Parameters
     ----------
