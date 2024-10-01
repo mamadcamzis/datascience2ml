@@ -8,14 +8,16 @@ The structure and fields of the RentApartments class are configured
 to match the corresponding database for rental apartments.
 """
 
-from sqlalchemy import REAL, INTEGER, VARCHAR
+from sqlalchemy import INTEGER, REAL, VARCHAR
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 from config import db_settings
 
 
 class Base(DeclarativeBase):
-    pass
+    """Base class for SQLAlchemy models."""
+
+    pass  # noqa: WPS420, WPS604
 
 
 class RentApartments(Base):
@@ -42,7 +44,7 @@ class RentApartments(Base):
         rent (int): Monthly rent price.
     """
 
-    __tablename__ = db_settings.TABLE_NAME
+    __tablename__ = db_settings.table_name
 
     address: Mapped[str] = mapped_column(VARCHAR(), primary_key=True)
     area: Mapped[float] = mapped_column(REAL())
@@ -60,4 +62,4 @@ class RentApartments(Base):
     facilities: Mapped[str] = mapped_column(VARCHAR())
     zip: Mapped[str] = mapped_column(VARCHAR())
     neighborhood: Mapped[str] = mapped_column(VARCHAR())
-    rent:  Mapped[int] = mapped_column(INTEGER())
+    rent: Mapped[int] = mapped_column(INTEGER())

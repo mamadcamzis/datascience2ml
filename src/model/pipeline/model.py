@@ -1,4 +1,3 @@
-
 """
 This module creates the pipeline for building, training and saving ML model.
 
@@ -8,18 +7,17 @@ model evaluation, and serialization of the trained model.
 """
 
 import os
-import joblib
-import pandas as pd
-
 from typing import List, Tuple
 
+import joblib
+import pandas as pd
+from loguru import logger
 from sklearn.base import BaseEstimator
 from sklearn.ensemble import RandomForestRegressor
-from sklearn.model_selection import train_test_split, GridSearchCV
-from loguru import logger
+from sklearn.model_selection import GridSearchCV, train_test_split
 
-from model.pipeline.preparation import prepare_data
 from config import model_settings
+from model.pipeline.preparation import prepare_data
 
 
 def build_model() -> None:
@@ -29,51 +27,43 @@ def build_model() -> None:
     Notes
     -----
     Cette fonction utilise les fonctions suivantes définies ailleurs :
-    - prepare_data() : Prépare les données pour l'entraînement du modèle.
-    - get_X_y(data) : Extrait les caractéristiques et la variable cible
-        à partir des données.
-    - split_train_test(X, y) : Divise les données en ensembles
-        d'entraînement et de test.
-    - train_model(X_train, y_train) : Entraîne le modèle avec les données
-        d'entraînement.
-    - evaluate_model(model, X_test, y_test) : Évalue les performances
-        du modèle sur l'ensemble de test.
-    - save_model(model) : Sauvegarde le modèle entraîné.
+        - prepare_data() : Prépare les données pour l'entraînement du modèle.
+        - get_X_y(data) : Extrait les caractéristiques et la variable cible
+            à partir des données.
+        - split_train_test(X, y) : Divise les données en ensembles
+            d'entraînement et de test.
+        - train_model(X_train, y_train) : Entraîne le modèle avec les données
+            d'entraînement.
+        - evaluate_model(model, X_test, y_test) : Évalue les performances
+            du modèle sur l'ensemble de test.
+        - save_model(model) : Sauvegarde le modèle entraîné.
 
     """
-    logger.info("Starting  Building Model Pipeline ...")
+    logger.info('Starting  Building Model Pipeline ...')
     # Préparation des données
-    data = prepare_data()
-
+    dataframe = prepare_data()
     # Extraction des caractéristiques et de la variable cible
-    X, y = get_X_y(data)
-
+    X, y = _get_x_y(dataframe)
     # Division en ensembles d'entraînement et de test
     X_train, X_test, y_train, y_test = split_train_test(X, y)
-
     # Entraînement du modèle
     rf_classifier = train_model(X_train, y_train)
-
     # Évaluation du modèle
     evaluate_model(rf_classifier, X_test, y_test)
-
     # Sauvegarde du modèle entraîné
     save_model(rf_classifier)
 
 
-def get_X_y(
-    data: pd.DataFrame,
-    col_x: List[str] = ['area', 'constraction_year', 'bedrooms', 'garden',
-                        'balcony_yes', 'parking_yes', 'furnished_yes',
-                        'garage_yes', 'storage_yes'],
-    col_y: str = 'rent'
-) -> Tuple[pd.DataFrame, pd.Series]:
-    """
-    Extrait les caractéristiques (X) et la variable cible (y) d'un DataFrame.
+def _get_x_y(df: pd.DataFrame,
+            col_x: List[str] = None,
+            col_y: str = 'rent',
+            ) -> Tuple[pd.DataFrame, pd.Series]:
+    """Extrait les caractéristiques (`col_x`) et la variable cible (`col_y`)
+        d'un DataFrame.
 
     Parameters
     ----------
-    data : pandas.DataFrame
+    df : pandas.DataFrame
         Le DataFrame contenant les données.
     col_x : List[str], optional
         La liste des colonnes à utiliser comme caractéristiques.
@@ -88,34 +78,42 @@ def get_X_y(
     -------
     Tuple[pd.DataFrame, pd.Series]
         Un tuple contenant deux éléments :
-        - X : pandas.DataFrame
-            Le DataFrame des caractéristiques.
-        - y : pandas.Series
-            La série représentant la variable cible.
+            - X : pandas.DataFrame
+                Le DataFrame des caractéristiques.
+            - y : pandas.Series
+                La série représentant la variable cible.
     """
-    logger.info("Getting X, y data ...")
-    X = data[col_x]
-    y = data[col_y]
+    if col_x is None:
+        col_x = [
+            'area',
+            'constraction_year',
+            'bedrooms',
+            'garden',
+            'balcony_yes',
+            'parking_yes',
+            'furnished_yes',
+            'garage_yes',
+            'storage_yes',
+        ]
+    logger.info('Getting X, y data ...')
+    X = df[col_x]
+    y = df[col_y]
     return X, y
 
 
-def split_train_test(
-    X: pd.DataFrame,
-    y: pd.Series,
-    test_size: float = 0.2
-) -> Tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series]:
-    """
-    Sépare les données en ensembles d'entraînement et de test.
-
+def split_train_test(X: pd.DataFrame, y: pd.Series,
+                    test_size: float = 0.2,) -> Tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series]:
+    """Sépare les données en ensembles d'entraînement et de test.
+        X = df[col_x]
     Parameters
     ----------
-    X : pandas.DataFrame
-        Le DataFrame contenant les caractéristiques.
-    y : pandas.Series
-        La série représentant la variable cible.
-    test_size : float, optional
-        La proportion de l'ensemble de données à inclure dans l'ensemble de
-        test. La valeur par défaut est 0.2.
+        X : pandas.DataFrame
+            Le DataFrame contenant les caractéristiques.
+        y : pandas.Series
+            La série représentant la variable cible.
+        test_size : float, optional
+            La proportion de l'ensemble de données à inclure dans l'ensemble de
+            test. La valeur par défaut est 0.2.
 
     Returns
     -------
@@ -131,17 +129,17 @@ def split_train_test(
         - y_test : pandas.Series
             La série représentant la variable cible pour l'ensemble de test.
     """
-    logger.info("Splitting data in train and test")
-    X_train, X_test, y_train, y_test = train_test_split(X, y,
-                                                        test_size=test_size,
-                                                        random_state=42)
-    return X_train, X_test, y_train, y_test
+    logger.info('Splitting data in train and test ...')
+    x_train, x_test, y_train, y_test = train_test_split(
+        X,
+        y,
+        test_size=test_size,
+        random_state=42,
+        )
+    return x_train, x_test, y_train, y_test
 
 
-def train_model(
-    x_train: pd.DataFrame,
-    y_train: pd.Series
-) -> BaseEstimator:
+def train_model(x_train: pd.DataFrame, y_train: pd.Series) -> BaseEstimator:
     """
     Entraîne un modèle de classification avec les données fournies.
 
@@ -153,27 +151,22 @@ def train_model(
         La série représentant la variable cible.
 
 
-    Returns
+    return
     -------
     BaseEstimator
         Le modèle de classification entraîné.
     """
-    logger.info("Training model and tunning hyperparams ...")
+    logger.info('Training model and tunning hyperparams ...')
     rf_classifier = RandomForestRegressor()
     grid_space = {'n_estimators': [100, 200, 300], 'max_depth': [3, 6, 9, 12]}
-    logger.debug(f"Grid Space is {grid_space}  ..")
-    grid = GridSearchCV(rf_classifier,
-                        param_grid=grid_space,
-                        cv=5,
-                        scoring='r2')
+    logger.debug(f'Grid Space is {grid_space}  ...')
+    grid = GridSearchCV(rf_classifier, param_grid=grid_space, cv=5, scoring='r2')
     model_grid = grid.fit(x_train, y_train)
     return model_grid.best_estimator_
 
 
 def evaluate_model(
-    model: BaseEstimator,
-    X_test: pd.DataFrame,
-    y_test: pd.Series
+    model: BaseEstimator, X_test: pd.DataFrame, y_test: pd.Series
 ) -> float:
     """
     Évalue les performances d'un modèle sur un ensemble de test.
@@ -192,9 +185,9 @@ def evaluate_model(
     float
         Le score de performance du modèle sur l'ensemble de test.
     """
-    logger.info(f"Evaluating Model, Score is \
-        {model.score(X_test, y_test):.2f}")
+
     score = model.score(X_test, y_test)
+    logger.info(f'Evaluating Model, Score is {score:.2f}')
     return score
 
 
@@ -215,11 +208,9 @@ def save_model(model):
     correctement avant d'appeler cette fonction.
     """
 
-    joblib_model = model_settings.MODELS_NAME + '_v_' + model_settings.VERSION\
-        + '.joblib'
-    persist_path = os.path.join(model_settings.MODELS_PATH,
-                                joblib_model)
-    logger.info(f"Saving Model at {persist_path}")
+    joblib_model = f'{model_settings.models_name}_V_{model_settings.version}.joblib'
+    persist_path = os.path.join(model_settings.models_path, joblib_model)
+    logger.info(f'Saving Model at {persist_path}')
     # Sauvegarde en format joblib
-    with open(persist_path, 'wb') as file:
-        joblib.dump(model, file)
+    with open(persist_path, 'wb') as fichier:
+        joblib.dump(model, fichier)

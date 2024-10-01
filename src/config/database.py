@@ -15,9 +15,9 @@ class DbSettings(BaseSettings):
 
     Attributes:
         model_config (SettingsConfigDict): Model config, loaded from .env file.
-        DB_CONNECTION (str): Database connection string.
-        TABLE_NAME (str): Name of the rental apartments table in DB.
-"""
+        db_connection (str): Database connection string.
+        table_name (str): Name of the rental apartments table in DB.
+    """
 
     model_config = SettingsConfigDict(
         env_file='config/.env',
@@ -25,10 +25,10 @@ class DbSettings(BaseSettings):
         extra='ignore',
     )
 
-    DB_CONNECTION: str
-    TABLE_NAME: str
+    db_connection: str
+    table_name: str
 
 
 db_settings = DbSettings()
 
-engine = create_engine(db_settings.DB_CONNECTION)
+engine = create_engine(db_settings.db_connection)

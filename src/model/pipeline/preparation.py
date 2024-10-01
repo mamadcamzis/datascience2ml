@@ -30,7 +30,7 @@ def prepare_data() -> pd.DataFrame:
     >>> df = prepare_data()
     >>> print(df.head())
     """
-    logger.info("Preparing data pipeline processing ...")
+    logger.info('Preparing data pipeline processing ...')
     data = load_data_from_db()
     # Encoder les colonnes 'balcony', 'parking',
     # 'furnished', 'garage', 'storage'
@@ -40,13 +40,10 @@ def prepare_data() -> pd.DataFrame:
     return df
 
 
-def encode_cat_cols(data: pd.DataFrame,
-                    columns: list = [
-                        'balcony',
-                        'parking',
-                        'furnished',
-                        'garage',
-                        'storage']) -> pd.DataFrame:
+def encode_cat_cols(
+    data: pd.DataFrame,
+    columns: list = None,
+) -> pd.DataFrame:
     """
     Encode les colonnes catégorielles spécifiées dans un DataFrame
     en utilisant des variables fictives (one-hot encoding).
@@ -78,7 +75,9 @@ def encode_cat_cols(data: pd.DataFrame,
     >>> encoded_df = encode_cat_cols(df)
     >>> print(encoded_df)
     """
-    logger.info(f"Encoding categorical columns {columns}")
+    if columns is None:
+        columns = ['balcony', 'parking', 'furnished', 'garage', 'storage']
+    logger.info(f'Encoding categorical columns {columns}')
     return pd.get_dummies(data, columns=columns, drop_first=True)
 
 
@@ -108,7 +107,7 @@ def parse_garden_col(data: pd.DataFrame) -> pd.DataFrame:
     >>> print(df)
     """
 
-    logger.info("Parsing 'garden' column ...")
+    logger.info('Parsing garden column ...')
     data['garden'] = data['garden'].apply(
         lambda x: 0 if x == 'Not present' else int(re.findall(r'\d+', x)[0]),
     )

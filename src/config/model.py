@@ -15,10 +15,10 @@ class ModelSettings(BaseSettings):
 
     Attributes:
         model_config (SettingsConfigDict): Model config, loaded from .env file.
-        MODELS_PATH (DirectoryPath): Filesystem path to the model.
-        MODELS_NAME (str): Name of the ML model.
-        VERSION (str): Version of the ML model.
-        DATA_FILE_NAME (str): Name of the data file.
+        models_path (DirectoryPath): Filesystem path to the model.
+        models_name (str): Name of the ML model.
+        version (str): Version of the ML model.
+        data_file_name (str): Name of the data file.
     """
 
     model_config = SettingsConfigDict(
@@ -27,10 +27,10 @@ class ModelSettings(BaseSettings):
         extra='ignore',
     )
 
-    MODELS_PATH: DirectoryPath
-    MODELS_NAME: str
-    VERSION: str
-    DATA_FILE_NAME: str
+    models_path: DirectoryPath
+    models_name: str
+    version: str
+    data_file_name: str
 
 
 model_settings = ModelSettings()
