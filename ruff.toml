@@ -1,0 +1,8 @@
+exclude = [
+    "src/config/__init__.py",
+    "src/config/.env",
+    "src/databases/database.sqlite",
+    "src/logs",
+    "src/model/models",
+    "src/logging_test.py"
+]
