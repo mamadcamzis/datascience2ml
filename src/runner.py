@@ -14,12 +14,11 @@ from model.model_service import ModelService
 
 @logger.catch
 def main():
-    """Main function to run the application."""
-
+    """Run function to launch the application."""
     logger.info(
         'Starting the prediction process, running \
-        the application ...'
-    )
+        the application ...',
+        )
     ml_svc = ModelService()
     # Load Model
     ml_svc.load_model()

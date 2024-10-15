@@ -54,34 +54,35 @@ def build_model() -> None:
     save_model(rf_classifier)
 
 
-def _get_x_y(df: pd.DataFrame,
-            col_x: List[str] = None,
-            col_y: str = 'rent',
-            ) -> Tuple[pd.DataFrame, pd.Series]:
-    """Extrait les caractéristiques (`col_x`) et la variable cible (`col_y`)
-        d'un DataFrame.
+def _get_x_y(
+    df: pd.DataFrame,
+    col_x: List[str] = None,
+    col_y: str = 'rent',
+        ) -> Tuple[pd.DataFrame, pd.Series]:
+    """Extaction des features et du target.
 
-    Parameters
-    ----------
-    df : pandas.DataFrame
-        Le DataFrame contenant les données.
-    col_x : List[str], optional
-        La liste des colonnes à utiliser comme caractéristiques.
-        Les colonnes par défaut sont ['area', 'constraction_year',
-        'bedrooms', 'garden', 'balcony_yes', 'parking_yes',
-        'furnished_yes', 'garage_yes', 'storage_yes'].
-    col_y : str, optional
-        Le nom de la colonne à utiliser comme variable cible.
-        La colonne par défaut est 'rent'.
+    Les caractéristiques (`col_x`) et la variable cible (`col_y`)
+    d'un DataFrame.
 
-    Returns
-    -------
-    Tuple[pd.DataFrame, pd.Series]
-        Un tuple contenant deux éléments :
-            - X : pandas.DataFrame
-                Le DataFrame des caractéristiques.
-            - y : pandas.Series
-                La série représentant la variable cible.
+    Args:
+        df: pandas.DataFrame
+            Le DataFrame contenant les données.
+        col_x: List[str], optional
+            La liste des colonnes à utiliser comme caractéristiques.
+            Les colonnes par défaut sont ['area', 'constraction_year',
+            'bedrooms', 'garden', 'balcony_yes', 'parking_yes',
+            'furnished_yes', 'garage_yes', 'storage_yes'].
+        col_y: str, optional
+            Le nom de la colonne à utiliser comme variable cible.
+            La colonne par défaut est 'rent'.
+
+    Returns:
+        Tuple[pd.DataFrame, pd.Series]
+            Un tuple contenant deux éléments :
+                - X : pandas.DataFrame
+                    Le DataFrame des caractéristiques.
+                - y : pandas.Series
+                    La série représentant la variable cible.
     """
     if col_x is None:
         col_x = [
@@ -101,33 +102,36 @@ def _get_x_y(df: pd.DataFrame,
     return X, y
 
 
-def split_train_test(X: pd.DataFrame, y: pd.Series,
-                    test_size: float = 0.2,) -> Tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series]:
-    """Sépare les données en ensembles d'entraînement et de test.
-        X = df[col_x]
-    Parameters
-    ----------
-        X : pandas.DataFrame
+def split_train_test(
+    X: pd.DataFrame,
+    y: pd.Series,
+    test_size: float = 0.2,
+        ) -> Tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series]:
+    """Separe les données en ensembles d'entraînement et de test.
+
+    X = df[col_x]
+
+    Args:
+        X: pandas.DataFrame
             Le DataFrame contenant les caractéristiques.
-        y : pandas.Series
+        y: pandas.Series
             La série représentant la variable cible.
-        test_size : float, optional
+        test_size: float, optional
             La proportion de l'ensemble de données à inclure dans l'ensemble de
             test. La valeur par défaut est 0.2.
 
-    Returns
-    -------
-    Tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series]
-        Un tuple contenant quatre éléments :
-        - X_train : pandas.DataFrame
-            Le DataFrame des caractéristiques pour l'ensemble d'entraînement.
-        - X_test : pandas.DataFrame
-            Le DataFrame des caractéristiques pour l'ensemble de test.
-        - y_train : pandas.Series
-            La série représentant la variable cible pour l'ensemble
-            d'entraînement.
-        - y_test : pandas.Series
-            La série représentant la variable cible pour l'ensemble de test.
+    Returns:
+        Tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series]
+        Un tuple contenant quatre éléments
+        X_train: pandas.DataFrame
+        Le DataFrame des caractéristiques pour l'ensemble d'entraînement.
+        X_test: pandas.DataFrame
+        Le DataFrame des caractéristiques pour l'ensemble de test.
+        y_train: pandas.Series
+        La série représentant la variable cible pour l'ensemble
+        d'entraînement.
+        y_test: pandas.Series
+        La série représentant la variable cible pour l'ensemble de test.
     """
     logger.info('Splitting data in train and test ...')
     x_train, x_test, y_train, y_test = train_test_split(
@@ -139,67 +143,62 @@ def split_train_test(X: pd.DataFrame, y: pd.Series,
     return x_train, x_test, y_train, y_test
 
 
-def train_model(x_train: pd.DataFrame, y_train: pd.Series) -> BaseEstimator:
-    """
-    Entraîne un modèle de classification avec les données fournies.
+def train_model(
+    x_train: pd.DataFrame,
+    y_train: pd.Series,
+        ) -> BaseEstimator:
+    """Entraîne un modèle de classification avec les données fournies.
 
-    Parameters
-    ----------
-    x_train : pandas.DataFrame
-        Le DataFrame contenant les caractéristiques.
-    y_train : pandas.Series
-        La série représentant la variable cible.
+    Args:
+        x_train: pandas.DataFrame, Le DataFrame contenant les caractéristiques.
+        y_train: pandas.Series, La série représentant la variable cible.
 
-
-    return
-    -------
-    BaseEstimator
-        Le modèle de classification entraîné.
+    Returns:
+        BaseEstimator: Le modèle de classification entraîné.
     """
     logger.info('Training model and tunning hyperparams ...')
     rf_classifier = RandomForestRegressor()
     grid_space = {'n_estimators': [100, 200, 300], 'max_depth': [3, 6, 9, 12]}
     logger.debug(f'Grid Space is {grid_space}  ...')
-    grid = GridSearchCV(rf_classifier, param_grid=grid_space, cv=5, scoring='r2')
+    grid = GridSearchCV(
+        rf_classifier,
+        param_grid=grid_space,
+        cv=5,
+        scoring='r2',
+        n_jobs=-1,
+            )
     model_grid = grid.fit(x_train, y_train)
     return model_grid.best_estimator_
 
 
 def evaluate_model(
-    model: BaseEstimator, X_test: pd.DataFrame, y_test: pd.Series
-) -> float:
+    model: BaseEstimator,
+    X_test: pd.DataFrame,
+    y_test: pd.Series,
+        ) -> float:
+    """Évalue les performances d'un modèle sur un ensemble de test.
+
+    Args:
+        model: BaseEstimator
+        X_test: pandas.DataFrame
+        y_test: pandas.Series
+
+    Returns:
+        float, Le score de performance du modèle sur l'ensemble de test.
     """
-    Évalue les performances d'un modèle sur un ensemble de test.
-
-    Parameters
-    ----------
-    model : BaseEstimator
-        Le modèle de classification entraîné.
-    X_test : pandas.DataFrame
-        Le DataFrame des caractéristiques pour l'ensemble de test.
-    y_test : pandas.Series
-        La série représentant la variable cible pour l'ensemble de test.
-
-    Returns
-    -------
-    float
-        Le score de performance du modèle sur l'ensemble de test.
-    """
-
     score = model.score(X_test, y_test)
     logger.info(f'Evaluating Model, Score is {score:.2f}')
     return score
 
 
 def save_model(model):
-    """
-    Sauvegarde le modèle à la fois en format pickle et joblib
-    dans le repertoire MODELS_DIR.
+    """Sauvegarde le modèle à la fois en format joblib.
 
-    Parameters
-    ----------
-    model : object
-        Le modèle à sauvegarder. Il doit être sérialisable.
+    Dans le repertoire MODELS_DIR.
+
+    Args:
+        model: object
+            Le modèle à sauvegarder. Il doit être sérialisable.
 
     Notes
     -----
@@ -207,8 +206,9 @@ def save_model(model):
     générer les noms de fichiers. Assurez-vous que ces variables sont définies
     correctement avant d'appeler cette fonction.
     """
-
-    joblib_model = f'{model_settings.models_name}_V_{model_settings.version}.joblib'
+    joblib_model = f'{model_settings.models_name}_V_{model_settings.version}'
+    extension = '.joblib'
+    joblib_model += extension
     persist_path = os.path.join(model_settings.models_path, joblib_model)
     logger.info(f'Saving Model at {persist_path}')
     # Sauvegarde en format joblib

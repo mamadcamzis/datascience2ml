@@ -1,26 +1,21 @@
 [tool.poetry]
 name = "datascience2ml"
 version = "0.1.0"
-description = "Build and Deploy ML microservice"
+description = "From NoteBook to ML Engineer"
 authors = ["Mamadou Camara <camara0388@gmail.com>"]
-license = "GNU"
+license = "MIT"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "3.10.12"
-scikit-learn = "^1.5.1"
-pydantic-settings = "^2.3.4"
-loguru = "^0.7.2"
+python = "^3.12"
+pandas = "^2.2.3"
 sqlalchemy = "^2.0.35"
+pydantic-settings = "^2.5.2"
+pydantic = "^2.9.2"
+flake8 = "^7.1.1"
 wemake-python-styleguide = "^0.19.2"
-ruff = "^0.6.7"
-black = "^24.8.0"
-isort = "^5.13.2"
 
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
-
-[tool.black]
-skip-string-normalization=true
