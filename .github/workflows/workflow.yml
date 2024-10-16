@@ -22,9 +22,20 @@ jobs:
           
       - name: Install poetry
         uses: snok/install-poetry@v1
+        with:
+          virtualenvs-in-project: true
+
+      - name: Load cache venv
+        uses: actions/cache@v4
+        id: cached-poetry-dependencies
+        with:
+          path: .venv
+          key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}
         
       - name: Install dependences using poetry
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
         run: poetry run make install
+        
       - name: Linting
         run: |
           poetry run make check
