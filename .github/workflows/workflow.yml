@@ -1,0 +1,34 @@
+# Github actions for CI/CD
+name:  App Workflows
+on: 
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.3'
+      - name: Install poetry
+        run:  |
+          curl -sSL https://install.python-poetry.org | python3 -
+          export PATH=$HOME/.local/bin:$PATH
+      - name: Install dependences using poetry
+        run: poetry run make install
+      - name: Linting
+        run: |
+          poetry run make check
+          poetry run make format
+      
+      
+    
