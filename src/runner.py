@@ -16,17 +16,17 @@ from model.model_service import ModelService
 def main():
     """Run function to launch the application."""
     logger.info(
-        'Starting the prediction process, running \
-        the application ...',
-        )
+        "Starting the prediction process, running \
+        the application ...",
+    )
     ml_svc = ModelService()
     # Load Model
     ml_svc.load_model()
     pred = ml_svc.predict([85, 2015, 2, 20, 1, 1, 0, 0, 1])
 
-    logger.info(f'Prediction is: {pred[0]:.2f} ...')
-    logger.info('Application run completed ...')
+    logger.info(f"Prediction is: {pred[0]:.2f} ...")
+    logger.info("Application run completed ...")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

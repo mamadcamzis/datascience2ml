@@ -7,7 +7,6 @@ from a file, building it if it doesn't exist, and to make predictions
 using the loaded model.
 """
 
-
 from pathlib import Path
 
 import joblib
@@ -47,26 +46,26 @@ class ModelService:
             model_name (str, optional): The name of the model to load.
                 Defaults to None.
         """
-        logger.info('Checking the existence of model config file ...')
+        logger.info("Checking the existence of model config file ...")
         if model_name:
             self.model_name = model_name
 
-        joblib_model = f'{self.model_name}_V_{model_settings.version}.joblib'
-        model_path = Path(f'{model_settings.models_path}/{joblib_model}')
+        joblib_model = f"{self.model_name}_V_{model_settings.version}.joblib"
+        model_path = Path(f"{model_settings.models_path}/{joblib_model}")
 
         if not model_path.exists():
             logger.warning(
-                f'Model not found at {model_path} -> ' +
-                f'building a new {model_settings.models_name} model ...',
-                )
+                f"Model not found at {model_path} -> "
+                + f"building a new {model_settings.models_name} model ...",
+            )
 
             build_model()
 
         logger.info(
-            f'Model {model_settings.models_name} exists -> '
-            f'Loading Model from {model_path} ...',
+            f"Model {model_settings.models_name} exists -> "
+            f"Loading Model from {model_path} ...",
         )
-        with open(model_path, 'rb') as fichier:
+        with open(model_path, "rb") as fichier:
             self.model = joblib.load(fichier)
 
     def predict(self, input_parameters: list) -> list:
@@ -83,22 +82,22 @@ class ModelService:
             list: The prediction result from the model.
         """
         logger.info(
-            'Predicting the price of the house with the following '
-            f'parameters {input_parameters} ...',
-            )
+            "Predicting the price of the house with the following "
+            f"parameters {input_parameters} ...",
+        )
         if not isinstance(input_parameters, pd.DataFrame):
             input_parameters = pd.DataFrame(
                 [input_parameters],
                 columns=[
-                    'area',
-                    'constraction_year',
-                    'bedrooms',
-                    'garden',
-                    'balcony_yes',
-                    'parking_yes',
-                    'furnished_yes',
-                    'garage_yes',
-                    'storage_yes',
+                    "area",
+                    "constraction_year",
+                    "bedrooms",
+                    "garden",
+                    "balcony_yes",
+                    "parking_yes",
+                    "furnished_yes",
+                    "garage_yes",
+                    "storage_yes",
                 ],
             )
 

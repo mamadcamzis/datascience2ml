@@ -39,7 +39,7 @@ def build_model() -> None:
         - save_model(model) : Sauvegarde le modèle entraîné.
 
     """
-    logger.info('Starting  Building Model Pipeline ...')
+    logger.info("Starting  Building Model Pipeline ...")
     # Préparation des données
     dataframe = prepare_data()
     # Extraction des caractéristiques et de la variable cible
@@ -57,8 +57,8 @@ def build_model() -> None:
 def _get_x_y(
     df: pd.DataFrame,
     col_x: List[str] = None,
-    col_y: str = 'rent',
-        ) -> Tuple[pd.DataFrame, pd.Series]:
+    col_y: str = "rent",
+) -> Tuple[pd.DataFrame, pd.Series]:
     """Extaction des features et du target.
 
     Les caractéristiques (`col_x`) et la variable cible (`col_y`)
@@ -86,17 +86,17 @@ def _get_x_y(
     """
     if col_x is None:
         col_x = [
-            'area',
-            'constraction_year',
-            'bedrooms',
-            'garden',
-            'balcony_yes',
-            'parking_yes',
-            'furnished_yes',
-            'garage_yes',
-            'storage_yes',
+            "area",
+            "constraction_year",
+            "bedrooms",
+            "garden",
+            "balcony_yes",
+            "parking_yes",
+            "furnished_yes",
+            "garage_yes",
+            "storage_yes",
         ]
-    logger.info('Getting X, y data ...')
+    logger.info("Getting X, y data ...")
     X = df[col_x]
     y = df[col_y]
     return X, y
@@ -106,7 +106,7 @@ def split_train_test(
     X: pd.DataFrame,
     y: pd.Series,
     test_size: float = 0.2,
-        ) -> Tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series]:
+) -> Tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series]:
     """Separe les données en ensembles d'entraînement et de test.
 
     X = df[col_x]
@@ -133,20 +133,20 @@ def split_train_test(
         y_test: pandas.Series
         La série représentant la variable cible pour l'ensemble de test.
     """
-    logger.info('Splitting data in train and test ...')
+    logger.info("Splitting data in train and test ...")
     x_train, x_test, y_train, y_test = train_test_split(
         X,
         y,
         test_size=test_size,
         random_state=42,
-        )
+    )
     return x_train, x_test, y_train, y_test
 
 
 def train_model(
     x_train: pd.DataFrame,
     y_train: pd.Series,
-        ) -> BaseEstimator:
+) -> BaseEstimator:
     """Entraîne un modèle de classification avec les données fournies.
 
     Args:
@@ -156,17 +156,17 @@ def train_model(
     Returns:
         BaseEstimator: Le modèle de classification entraîné.
     """
-    logger.info('Training model and tunning hyperparams ...')
+    logger.info("Training model and tunning hyperparams ...")
     rf_classifier = RandomForestRegressor()
-    grid_space = {'n_estimators': [100, 200, 300], 'max_depth': [3, 6, 9, 12]}
-    logger.debug(f'Grid Space is {grid_space}  ...')
+    grid_space = {"n_estimators": [100, 200, 300], "max_depth": [3, 6, 9, 12]}
+    logger.debug(f"Grid Space is {grid_space}  ...")
     grid = GridSearchCV(
         rf_classifier,
         param_grid=grid_space,
         cv=5,
-        scoring='r2',
+        scoring="r2",
         n_jobs=-1,
-            )
+    )
     model_grid = grid.fit(x_train, y_train)
     return model_grid.best_estimator_
 
@@ -175,7 +175,7 @@ def evaluate_model(
     model: BaseEstimator,
     X_test: pd.DataFrame,
     y_test: pd.Series,
-        ) -> float:
+) -> float:
     """Évalue les performances d'un modèle sur un ensemble de test.
 
     Args:
@@ -187,7 +187,7 @@ def evaluate_model(
         float, Le score de performance du modèle sur l'ensemble de test.
     """
     score = model.score(X_test, y_test)
-    logger.info(f'Evaluating Model, Score is {score:.2f}')
+    logger.info(f"Evaluating Model, Score is {score:.2f}")
     return score
 
 
@@ -206,11 +206,11 @@ def save_model(model):
     générer les noms de fichiers. Assurez-vous que ces variables sont définies
     correctement avant d'appeler cette fonction.
     """
-    joblib_model = f'{model_settings.models_name}_V_{model_settings.version}'
-    extension = '.joblib'
+    joblib_model = f"{model_settings.models_name}_V_{model_settings.version}"
+    extension = ".joblib"
     joblib_model += extension
     persist_path = os.path.join(model_settings.models_path, joblib_model)
-    logger.info(f'Saving Model at {persist_path}')
+    logger.info(f"Saving Model at {persist_path}")
     # Sauvegarde en format joblib
-    with open(persist_path, 'wb') as fichier:
+    with open(persist_path, "wb") as fichier:
         joblib.dump(model, fichier)

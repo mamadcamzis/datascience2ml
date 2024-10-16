@@ -30,7 +30,7 @@ def prepare_data() -> pd.DataFrame:
     >>> df = prepare_data()
     >>> print(df.head())
     """
-    logger.info('Preparing data pipeline processing ...')
+    logger.info("Preparing data pipeline processing ...")
     db_data = load_data_from_db()
     # Encoder les colonnes 'balcony', 'parking',
     # 'furnished', 'garage', 'storage'
@@ -75,8 +75,8 @@ def encode_cat_cols(
     >>> print(encoded_df)
     """
     if columns is None:
-        columns = ['balcony', 'parking', 'furnished', 'garage', 'storage']
-    logger.info(f'Encoding categorical columns {columns}')
+        columns = ["balcony", "parking", "furnished", "garage", "storage"]
+    logger.info(f"Encoding categorical columns {columns}")
     return pd.get_dummies(df_data, columns=columns, drop_first=True)
 
 
@@ -103,8 +103,8 @@ def parse_garden_col(df_data: pd.DataFrame) -> pd.DataFrame:
     >>> df = parse_garden_col(df)
     >>> print(df)
     """
-    logger.info('Parsing garden column ...')
-    df_data['garden'] = df_data['garden'].apply(
-        lambda x: 0 if x == 'Not present' else int(re.findall(r'\d+', x)[0]),
+    logger.info("Parsing garden column ...")
+    df_data["garden"] = df_data["garden"].apply(
+        lambda x: 0 if x == "Not present" else int(re.findall(r"\d+", x)[0]),
     )
     return df_data
