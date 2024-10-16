@@ -39,7 +39,7 @@ def build_model() -> None:
         - save_model(model) : Sauvegarde le modèle entraîné.
 
     """
-    logger.info("Starting  Building Model Pipeline ...")
+    logger.info('Starting  Building Model Pipeline ...')
     # Préparation des données
     dataframe = prepare_data()
     # Extraction des caractéristiques et de la variable cible
@@ -57,7 +57,7 @@ def build_model() -> None:
 def _get_x_y(
     df: pd.DataFrame,
     col_x: List[str] = None,
-    col_y: str = "rent",
+    col_y: str = 'rent',
 ) -> Tuple[pd.DataFrame, pd.Series]:
     """Extaction des features et du target.
 
@@ -86,17 +86,17 @@ def _get_x_y(
     """
     if col_x is None:
         col_x = [
-            "area",
-            "constraction_year",
-            "bedrooms",
-            "garden",
-            "balcony_yes",
-            "parking_yes",
-            "furnished_yes",
-            "garage_yes",
-            "storage_yes",
+            'area',
+            'constraction_year',
+            'bedrooms',
+            'garden',
+            'balcony_yes',
+            'parking_yes',
+            'furnished_yes',
+            'garage_yes',
+            'storage_yes',
         ]
-    logger.info("Getting X, y data ...")
+    logger.info('Getting X, y data ...')
     X = df[col_x]
     y = df[col_y]
     return X, y
@@ -133,7 +133,7 @@ def split_train_test(
         y_test: pandas.Series
         La série représentant la variable cible pour l'ensemble de test.
     """
-    logger.info("Splitting data in train and test ...")
+    logger.info('Splitting data in train and test ...')
     x_train, x_test, y_train, y_test = train_test_split(
         X,
         y,
@@ -156,15 +156,15 @@ def train_model(
     Returns:
         BaseEstimator: Le modèle de classification entraîné.
     """
-    logger.info("Training model and tunning hyperparams ...")
+    logger.info('Training model and tunning hyperparams ...')
     rf_classifier = RandomForestRegressor()
-    grid_space = {"n_estimators": [100, 200, 300], "max_depth": [3, 6, 9, 12]}
-    logger.debug(f"Grid Space is {grid_space}  ...")
+    grid_space = {'n_estimators': [100, 200, 300], 'max_depth': [3, 6, 9, 12]}
+    logger.debug(f'Grid Space is {grid_space}  ...')
     grid = GridSearchCV(
         rf_classifier,
         param_grid=grid_space,
         cv=5,
-        scoring="r2",
+        scoring='r2',
         n_jobs=-1,
     )
     model_grid = grid.fit(x_train, y_train)
@@ -187,7 +187,7 @@ def evaluate_model(
         float, Le score de performance du modèle sur l'ensemble de test.
     """
     score = model.score(X_test, y_test)
-    logger.info(f"Evaluating Model, Score is {score:.2f}")
+    logger.info(f'Evaluating Model, Score is {score:.2f}')
     return score
 
 
@@ -206,11 +206,11 @@ def save_model(model):
     générer les noms de fichiers. Assurez-vous que ces variables sont définies
     correctement avant d'appeler cette fonction.
     """
-    joblib_model = f"{model_settings.models_name}_V_{model_settings.version}"
-    extension = ".joblib"
+    joblib_model = f'{model_settings.models_name}_V_{model_settings.version}'
+    extension = '.joblib'
     joblib_model += extension
     persist_path = os.path.join(model_settings.models_path, joblib_model)
-    logger.info(f"Saving Model at {persist_path}")
+    logger.info(f'Saving Model at {persist_path}')
     # Sauvegarde en format joblib
-    with open(persist_path, "wb") as fichier:
+    with open(persist_path, 'wb') as fichier:
         joblib.dump(model, fichier)

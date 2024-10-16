@@ -13,8 +13,9 @@ clean:
 	rm -rf .ruff_cache
 
 check:
-	poetry run ruff check src/
-	poetry run ruff format src/
+	poetry run flake8 src/
+	#poetry run ruff check src/
+	
 
 format:
 	poetry run black src/

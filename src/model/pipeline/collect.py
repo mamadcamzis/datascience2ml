@@ -35,7 +35,7 @@ def load_data(path: FilePath = model_settings.data_file_name) -> pd.DataFrame:
     >>> print(df.head())
     """
     csv_path = os.path.join(model_settings.data_path, path)
-    logger.info(f"Loading csv file at {csv_path} ...")
+    logger.info(f'Loading csv file at {csv_path} ...')
     return pd.read_csv(csv_path)
 
 
@@ -50,6 +50,6 @@ def load_data_from_db() -> pd.DataFrame:
     >>> df = load_data_from_db()
     >>> print(df.head())
     """
-    logger.info("Loading data from database ...")
+    logger.info('Loading data from database ...')
     query = select(RentApartments)
     return pd.read_sql(query, engine)
