@@ -17,7 +17,6 @@ from config import model_settings
 from model.pipeline.model import build_model
 
 
-
 class ModelService:
     """
     A service class for managing the ML model.
