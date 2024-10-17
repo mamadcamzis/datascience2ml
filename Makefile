@@ -1,9 +1,12 @@
 
-.PHONY: run install clean check runner
-.DEFAULT_GOAL := runner
+.PHONY: run install clean check run_builder run_inference runner_build runner_inference
+.DEFAULT_GOAL := runner_inference
 
-run: install
-	cd src; poetry run python runner.py
+run_builder: install
+	cd src; poetry run python3 runner_builder.py
+
+run_inference: install
+	cd src; poetry run python3 runner_inference.py
 
 install: pyproject.toml
 	poetry install
@@ -20,4 +23,6 @@ check:
 format:
 	poetry run black src/
 
-runner: check run clean
+runner_build: check run_builder clean
+
+runner_inference: check run_inference clean

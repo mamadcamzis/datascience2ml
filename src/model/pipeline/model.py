@@ -206,7 +206,8 @@ def save_model(model):
     générer les noms de fichiers. Assurez-vous que ces variables sont définies
     correctement avant d'appeler cette fonction.
     """
-    joblib_model = f'{model_settings.models_name}_V_{model_settings.version}'
+    version = model_settings.version
+    joblib_model = f'{model_settings.models_name}_version_{version}'
     extension = '.joblib'
     joblib_model += extension
     persist_path = os.path.join(model_settings.models_path, joblib_model)
