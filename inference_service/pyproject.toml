@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "inference-service"
+version = "0.1.0"
+description = ""
+authors = ["Mamadou Camara <camara0388@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+flask = "^3.0.3"
+pydantic = "^2.9.2"
+joblib = "^1.4.2"
+pandas = "^2.2.3"
+loguru = "^0.7.2"
+pydantic-settings = "^2.6.0"
+sqlalchemy = "^2.0.36"
+scikit-learn = "^1.5.2"
+wemake-python-styleguide = "^0.19.2"
+isort = "^5.13.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
