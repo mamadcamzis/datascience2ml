@@ -1,0 +1,30 @@
+# Github actions for CI/CD
+name:  Lint Workflow
+on: 
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+
+jobs:
+
+  lint:
+    runs-on: ubuntu-latest
+    
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Building Application
+        uses: ./.github/actions/build-application
+      
+      - name: Linting
+        run: |
+          poetry run make check
+          poetry run make format
+      
+      
+    
