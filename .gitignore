@@ -182,5 +182,10 @@ src/databases/__pycache__/
 src/model/__pycache__/
 src/pipeline/__pycache__/
 src/__pycache__/
+
 # Ignore all .pyc files in the src folder
-src/*.pyc   
+inference_service/app/api/__pycache__
+inference_service/app/schema/__pycache__
+inference_service/app/services/__pycache__
+inference_service/app/sercices/config/__pycache__
+
